@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bharat Billing</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="print.css">
+</head>
+<body>
+
+    <div class="app" id="screenView">
+
+        <header class="header">
+            <h1>Bharat Billing</h1>
+            <div class="toolbar">
+                <button id="newBtn">New</button>
+                <button id="customersBtn">Customers</button>
+                <button id="saveBtn" class="primary">Save</button>
+                <button id="printBtn">Print</button>
+            </div>
+        </header>
+
+        <div class="status-line">
+            <span class="dot" id="dbDot"></span>
+            <span id="dbStatus">Starting…</span>
+        </div>
+
+        <div class="workspace">
+
+            <div class="side-col">
+
+                <div class="card">
+                    <h2>Customer</h2>
+                    <div class="field">
+                        <label>Name</label>
+                        <input type="text" id="customerName" list="customerNameList" placeholder="Select or type a customer">
+                        <datalist id="customerNameList"></datalist>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Invoice</h2>
+
+                    <div class="field">
+                        <label>Invoice No</label>
+                        <input type="text" id="invoiceNo">
+                    </div>
+
+                    <div class="field">
+                        <label>Date of Issue</label>
+                        <input type="date" id="invoiceDate">
+                    </div>
+
+                    <div class="field">
+                        <label>Material Supply</label>
+                        <select id="material">
+                            <option value="">Select material</option>
+                            <option>Only Printing On Customer's Paper</option>
+                            <option>Paper Supplied by us</option>
+                            <option>Only Printing on Customers Foam</option>
+                            <option>Only Paper and Holo supplied by Customer</option>
+                            <option>Only Printing on Customer's Board</option>
+                            <option value="__other__">Other (type your own)</option>
+                        </select>
+                    </div>
+
+                    <div class="field" id="materialOtherField" style="display:none;">
+                        <label>Specify Material</label>
+                        <input type="text" id="materialOther">
+                    </div>
+
+                    <div class="field suggest-anchor">
+                        <label>Shipped To</label>
+                        <textarea id="shippedTo" rows="2" placeholder="Shipping address, if different from customer"></textarea>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field">
+                            <label>Challan No</label>
+                            <input type="text" id="challan">
+                        </div>
+                        <div class="field">
+                            <label>Challan Date</label>
+                            <input type="date" id="challanDate">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Carrying Name <span style="font-weight:normal;color:var(--muted);"></span></label>
+                        <input type="text" id="printCarrierName">
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field">
+                            <label>Receipt No</label>
+                            <input type="text" id="receiptNo">
+                        </div>
+                        <div class="field">
+                            <label>Receipt Date</label>
+                            <input type="date" id="receiptDate">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>No. of G.P. Bundles</label>
+                        <input type="number" id="gpBundles" min="0" step="1" value="0">
+                    </div>
+                </div>
+
+            </div>
+
+            <section class="items-section">
+                <div class="items-body">
+                    <div class="items-main">
+                        <div class="items-head">
+                            <h2>Items</h2>
+                            <button id="addRowBtn" type="button">+ Add row</button>
+                        </div>
+
+                        <div class="table-scroll">
+                            <table id="invoiceTable">
+                                <thead>
+                                    <tr>
+                                        <th class="qty">Qty</th>
+                                        <th class="particular">Particulars</th>
+                                        <th class="amount">Amount</th>
+                                        <th class="remove"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody"></tbody>
+                            </table>
+                        </div>
+                        <!-- <p class="hint">Click into Particulars to see this customer's past items — click a suggestion to use it, or just type your own. Amount is typed in directly, not auto-calculated.</p> -->
+                    </div>
+
+                    <div class="totals-card">
+                        <div class="total-row">
+                            <span>Subtotal</span>
+                            <input type="text" id="pisubtotal" value="0.00" readonly>
+                        </div>
+                        <div class="total-row">
+                            <span>CGST %</span>
+                            <input type="number" id="picgstPercent" value="0" min="0" step="1">
+                        </div>
+                        <div class="total-row">
+                            <span>SGST %</span>
+                            <input type="number" id="pisgstPercent" value="0" min="0" step="1">
+                        </div>
+                        <div class="total-row">
+                            <span>IGST %</span>
+                            <input type="number" id="piigstPercent" value="0" min="0" step="1">
+                        </div>
+                        <div class="total-row">
+                            <span>GST Amount</span>
+                            <input type="text" id="gstAmount" value="0.00" >
+                        </div>
+                        <div class="total-row">
+                            <span>Rounded Off</span>
+                            <input type="text" id="roundOff" value="0.00" >
+                        </div>
+                        <div class="total-row grand">
+                            <span>Grand Total</span>
+                            <input type="text" id="grandTotal" value="0.00" >
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <footer class="footer">
+            <span id="excelStatus"></span>
+        </footer>
+
+    </div>
+
+    <!-- =================================================
+         PRE-PRINTED OVERLAY — PRINT ONLY
+         Your stationery already has the letterhead, box
+         borders, column headers, GSTIN/PAN, and footer text
+         printed on it. This prints ONLY the variable data,
+         positioned to land in the blank spaces on that sheet.
+         Populated by print.js just before printing.
+    ================================================== -->
+
+<div class="print-only" id="printInvoice">
+
+    <div class="pf" id="piConsigneeName"></div>
+    <div class="pf" id="piConsigneeAddress"></div>
+    <div class="pf" id="piConsigneeCityState"></div>
+    <div class="pf" id="piConsigneeGstin"></div>
+
+    <div class="pf" id="piInvoiceNo"></div>
+    <div class="pf" id="piIssueDateTime"></div>
+
+    <div id="piMaterial"></div>
+
+    <div id="piItemsContainer"></div>
+
+    <div id="piSubtotal"></div>
+
+    <div id="piCgstLabel"></div>
+    <div id="piCgstValue"></div>
+
+    <div id="piSgstLabel"></div>
+    <div id="piSgstValue"></div>
+
+    <div id="piIgstLabel"></div>
+    <div id="piIgstValue"></div>
+
+<div id="piTotalAfterGst"></div>
+
+<div id="piRoundOffLabel"></div>
+<div id="piRoundOffValue"></div>
+
+<div id="piChallan"></div>
+<div id="piShippedTo"></div>
+<div id="piReceipt"></div>
+<div id="piAmountWords"></div>
+
+<div class="pf" id="piGrandTotal"></div>
+
+</div>
+
+    <!-- =================================================
+         CUSTOMERS TAB — a small modal for adding/looking up
+         customers on their own, outside of any invoice. Saving
+         here writes straight to the customers table, refreshes
+         BillingExcel.xlsx, and refreshes the Customer Name
+         dropdown on the invoice form.
+    ================================================== -->
+
+    <div class="modal-backdrop" id="customerBackdrop">
+        <div class="modal-card">
+            <div class="modal-head">
+                <h2>Customers</h2>
+                <button type="button" id="customerCloseBtn">Close</button>
+            </div>
+
+            <form id="customerForm" class="modal-form">
+                <div class="field">
+                    <label>Name</label>
+                    <input type="text" id="custName" required>
+                </div>
+
+                <div class="field">
+                    <label>Address</label>
+                    <textarea id="custAddress" rows="2"></textarea>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label>City</label>
+                        <input type="text" id="custCity">
+                    </div>
+                    <div class="field">
+                        <label>State</label>
+                        <input type="text" id="custState">
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label>GSTIN</label>
+                        <input type="text" id="custGst">
+                    </div>
+                    <div class="field">
+                        <label>Phone</label>
+                        <input type="text" id="custPhone">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Pincode</label>
+                    <input type="text" id="custPincode" inputmode="numeric" maxlength="10">
+                </div>
+
+                <div class="modal-form-actions">
+                    <button type="button" id="custClearBtn">Clear</button>
+                    <button type="submit" class="primary" id="custSaveBtn">Save Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="print.js"></script>
+</body>
+</html>

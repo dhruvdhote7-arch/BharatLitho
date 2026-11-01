@@ -1,0 +1,9 @@
+{
+  "name": "bharat-billing-app",
+  "version": "1.0.0",
+  "main": "main.js",
+  "dependencies": {
+    "sql.js": "^1.11.0",
+    "xlsx": "^0.18.5"
+  }
+}

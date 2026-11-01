@@ -1,0 +1,439 @@
+:root {
+    --ink: #1c2321;
+    --paper: #a1cbf3;
+    --card: #ffffff;
+    --line: #c7c1b0;
+    --accent: #3b8af7;
+    --accent-soft: #e7efe8;
+    --danger: #a3392f;
+    --muted: #6b6a63;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    font-size: 14px;
+}
+
+.app {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 16px 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 10px;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
+
+.header h1 {
+    font-size: 20px;
+    margin: 0;
+    letter-spacing: 0.02em;
+}
+
+.toolbar button {
+    margin-left: 8px;
+}
+
+button {
+    font: inherit;
+    padding: 8px 16px;
+    border: 1px solid var(--ink);
+    background: var(--card);
+    color: var(--ink);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+.status-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    flex-shrink: 0;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--muted);
+    display: inline-block;
+}
+
+.dot.ready {
+    background: var(--accent);
+}
+
+.dot.error {
+    background: var(--danger);
+}
+
+/* Customer name + Invoice card in a narrow left column, Items (with
+   its own totals card) filling the rest of the screen — no page
+   scroll needed; the item rows scroll internally instead (see
+   .table-scroll below). */
+.workspace {
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
+    flex: 1;
+    min-height: 0;
+}
+
+.side-col {
+    width: 290px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    overflow-y: auto;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 14px;
+}
+
+.card h2,
+.items-section h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin: 0 0 10px;
+}
+
+.field {
+    margin-bottom: 8px;
+}
+
+.field label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 3px;
+}
+
+.field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    font: inherit;
+    padding: 7px 8px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: #fff;
+    color: var(--ink);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+textarea {
+    resize: vertical;
+}
+
+.items-section {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 14px;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.items-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+}
+
+/* The table scrolls within its own box instead of the whole page
+   scrolling — the thead stays put (sticky) so the column headers
+   are always visible while you scroll through item rows. */
+.table-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    background: var(--card);
+    z-index: 1;
+}
+
+th {
+    text-align: left;
+    font-size: 12px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    padding: 6px 6px;
+}
+
+td {
+    padding: 14px 6px;
+    border-bottom: 1px solid var(--line);
+}
+
+th.qty,
+td .qty {
+    width: 70px;
+}
+
+th.amount {
+    width: 110px;
+}
+
+th.remove {
+    width: 30px;
+}
+
+td input {
+    padding: 6px 7px;
+}
+
+td .amount-field {
+    text-align: right;
+    background: var(--paper);
+}
+td .particular {
+    resize: none;
+    min-height: 0;
+    height: auto;
+    overflow: hidden;
+    font-family: inherit;
+    line-height: 1.5;
+}
+.remove-row {
+    background: none;
+    border: none;
+    color: var(--danger);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 4px;
+}
+
+/* Table + totals card sit side by side: table (and its own hint
+   text) takes the remaining space and fills the section's full
+   height, totals card is a fixed-width block pinned to the right. */
+.items-body {
+    display: flex;
+    align-items: stretch;
+    gap: 20px;
+    flex: 1;
+    min-height: 0;
+}
+
+.items-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.totals-card {
+    width: 280px;
+    flex-shrink: 0;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 14px 16px;
+}
+
+.total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.total-row span {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.total-row input {
+    width: 130px;
+    text-align: right;
+}
+
+.total-row.grand {
+    border-top: 1px solid var(--line);
+    padding-top: 8px;
+    margin-top: 4px;
+}
+
+.total-row.grand span {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.total-row.grand input {
+    font-weight: 700;
+    font-size: 15px;
+    background: var(--accent-soft);
+    border-color: var(--accent);
+}
+
+.particular-cell,
+.suggest-anchor {
+    position: relative;
+}
+
+td .particular {
+    resize: vertical;
+    min-height: 50px;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+.suggest-box {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    background: #fff;
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    max-height: 160px;
+    overflow-y: auto;
+}
+
+.suggest-option {
+    padding: 6px 8px;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: pre-wrap;
+    border-bottom: 1px solid var(--line);
+}
+
+.suggest-option:last-child {
+    border-bottom: none;
+}
+
+.suggest-option:hover {
+    background: var(--accent-soft);
+}
+
+.hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 8px 0 0;
+    flex-shrink: 0;
+}
+
+.footer {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: right;
+    flex-shrink: 0;
+    padding-top: 8px;
+}
+
+/* ---------- Customers tab modal ---------- */
+/* A small standalone modal for adding/looking up customers without
+   going through an invoice. Deliberately its own set of classes
+   (deliberately its own set of classes) since that one is sized to a
+   fixed 210mm x 297mm print page. */
+.modal-backdrop {
+    display: none;
+}
+
+.modal-backdrop.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(28, 35, 33, 0.72);
+    padding: 24px;
+}
+
+.modal-card {
+    background: var(--card);
+    border-radius: 6px;
+    padding: 20px 24px 24px;
+    width: 600px;
+    max-width: 100%;
+    max-height: 86vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.4);
+}
+
+.modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.modal-head h2 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.modal-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 4px;
+}

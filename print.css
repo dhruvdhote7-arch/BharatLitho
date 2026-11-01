@@ -1,0 +1,320 @@
+@page {
+    size: A4 portrait;
+    margin: 0;
+}
+
+/* ---- 1. Global nudge — shifts EVERY field the same amount.
+   Print one test page on the real stationery, measure the offset,
+   and adjust these two values first before touching anything else. ---- */
+:root {
+    --nudge-x: 0mm;
+    --nudge-y: 0mm;
+}
+*{
+    font-size: 12pt;
+}
+
+/* ---- Base visibility: hidden on screen, shown only when printing. ---- */
+.print-only {
+    display: none;
+}
+
+.print-only {
+    position: relative;
+    width: 210mm;
+    height: 297mm;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #000;
+}
+
+.pf {
+    position: absolute;
+    white-space: pre-wrap;
+    line-height: 1.3;
+    z-index: 1;
+}
+
+#piConsigneeName {
+    top: calc(9mm + var(--nudge-y));
+    left: calc(49mm + var(--nudge-x));
+    width: 90mm;
+    font-weight: bold;
+    font-size: 14pt;
+}
+
+#piConsigneeAddress {
+    top: calc(14mm + var(--nudge-y));
+    left: calc(49mm + var(--nudge-x));
+    width: 90mm;
+        font-size: 14pt;
+
+}
+
+#piConsigneeCityState {
+    top: calc(27mm + var(--nudge-y));
+    left: calc(49mm + var(--nudge-x));
+    width: 90mm;
+        font-size: 14pt;
+
+}
+
+#piConsigneeGstin {
+    top: calc(33mm + var(--nudge-y));
+    left: calc(49mm + var(--nudge-x));
+    width: 90mm;
+        font-size: 14pt;
+
+}
+
+/* ---- 3. Invoice No / Date — the third, otherwise-blank box in the
+   header row (to the right of the pre-printed seller GSTIN/PAN box,
+   which is left untouched). ---- */
+#piInvoiceNo {
+    top: calc(40mm + var(--nudge-y));
+    left: calc(177mm + var(--nudge-x));
+    width: 60mm;
+    line-height: 1.4;
+    white-space: nowrap;
+        font-size: 14pt;
+
+}
+
+#piIssueDateTime {
+    top: calc(52mm + var(--nudge-y));
+    left: calc(177mm + var(--nudge-x));
+    width: 60mm;
+        font-size: 14pt;
+
+}
+
+/* ---- 4. Item table columns (x-positions only — y is set per row
+   by print.js, since every row's height depends on how much its
+   text wraps). Five printed columns on the stationery — Qty,
+   Description, HSN Code, Amount, Total — but HSN Code is only
+   labelled in the header on the real sheet (no per-row entry), so
+   Description simply runs underneath it through to the Amount
+   column. ---- */
+:root {
+    --col-qty-left: 15mm;
+    --col-desc-left: 41mm;
+    --col-desc-width: 94mm;
+    --col-amount-left:137mm;
+    --col-amount-width: 28mm;
+    --col-total-left: 195mm;
+    --col-total-width: 27mm;
+    --col-amount-shift: 5mm;
+    /* nudges item Amount figures further right within their column */
+    --items-top: 100mm;
+    /* first item row's top edge */
+    --items-bottom-limit: 250mm;
+    /* stay above the item area's own rule at 255.2mm */
+    --line-height-mm: 4.6mm;
+    /* per wrapped line of text */
+}
+
+.pi-row {
+    position: absolute;
+    width: 100%;
+}
+
+.pi-qty {
+    position: absolute;
+    padding-bottom: 35mm;
+    left: calc(var(--col-qty-left) + var(--nudge-x));
+    width: 20mm;
+    text-align: right;
+}
+
+.pi-desc {
+    position: absolute;
+    padding-bottom: 35mm ;
+    left: calc(var(--col-desc-left) + var(--nudge-x));
+    width: var(--col-desc-width);
+    white-space: pre-wrap;
+}
+
+.pi-amount {
+    position: absolute;
+    left: calc(157mm + var(--nudge-x));
+    width: var(--col-amount-width);
+    text-align: right;
+}
+
+/* ---- 4b. Total-column rows — Subtotal, SGST/CGST/IGST, and the
+   final "Total (Rounded Off)" line. Each sits in the Total column,
+   with an optional label sitting in the Description column on the
+   same row (e.g. "SGST @ 9%"). ---- */
+.pi-total {
+    position: absolute;
+    left: calc(var(--col-total-left) + var(--nudge-x));
+    width: var(--col-total-width);
+    text-align: right;
+}
+
+.pi-total-rule {
+    border-top: 0.3mm solid #000;
+    padding-top: 1mm;
+}
+
+/* ---- 4c. Plain full-width lines — Material Supply, Shipped To, and
+   Receipt. These read across the Description + Amount + Total
+   columns rather than sitting in just one, same as how they're
+   handwritten on the sample invoice. (Challan and Amount-in-Words
+   now have their own individual rules below/near the fixed fields,
+   since they're single occurrences rather than a repeating list.) ---- */
+/* Material Supply — its own fixed field, same pattern as Challan/
+   Shipped To/Receipt below. Sits just above the item rows. */
+#piMaterial {
+    position: absolute;
+    top: calc(96mm + var(--nudge-y));
+    left: calc(var(--col-desc-left) + var(--nudge-x));
+    width: var(--col-desc-width);
+    font-weight: bold;
+    white-space: pre-wrap;
+}
+
+/* ---- 4d. Individualized totals/footer lines — each is a single
+   occurrence per invoice (unlike the item rows, which repeat), so
+   each gets its own id and its own top/left here. Change one
+   without affecting the others. Label + value pairs share the same
+   top so they sit on one line. ---- */
+#piSubtotal {
+    position: absolute;
+    top: calc(195mm + var(--nudge-y));
+    left: calc(var(--col-total-left) + var(--nudge-x));
+    width: var(--col-total-width);
+    text-align: right;
+    border-top: 0.3mm solid #000;
+    padding-top: 1mm;
+}
+
+#piCgstLabel,
+#piCgstValue {
+    top: calc(206mm + var(--nudge-y));
+}
+
+#piSgstLabel,
+#piSgstValue {
+    top: calc(211mm + var(--nudge-y));
+}
+
+#piIgstLabel,
+#piIgstValue {
+    top: calc(206mm + var(--nudge-y));
+}
+
+#piCgstLabel,
+#piSgstLabel,
+#piIgstLabel {
+    position: absolute;
+    left: calc(var(--col-desc-left) + var(--nudge-x));
+    width: var(--col-desc-width);
+}
+
+#piCgstValue,
+#piSgstValue,
+#piIgstValue {
+    position: absolute;
+    left: calc(var(--col-total-left) + var(--nudge-x));
+    width: var(--col-total-width);
+    text-align: right;
+}
+
+/* Total after GST, before rounding — no label, just a rule line
+   above the figure. */
+#piTotalAfterGst {
+    position: absolute;
+    top: calc(219mm + var(--nudge-y));
+    left: calc(var(--col-total-left) + var(--nudge-x));
+    width: var(--col-total-width);
+    text-align: right;
+    border-top: 0.3mm solid #000;
+    padding-top: 1mm;
+}
+
+/* Round Off — shows the paisa adjustment (e.g. "+0.35"), not the
+   final total. */
+#piRoundOffLabel {
+    position: absolute;
+    top: calc(230mm + var(--nudge-y));
+    left: calc(var(--col-desc-left) + var(--nudge-x));
+    width: var(--col-desc-width);
+}
+
+#piRoundOffValue {
+    position: absolute;
+    top: calc(230mm + var(--nudge-y));
+    left: calc(var(--col-total-left) + var(--nudge-x));
+    width: var(--col-total-width);
+    text-align: right;
+}
+
+/* Challan — its own full-width plain line. */
+#piChallan {
+    position: absolute;
+    top: calc(240mm + var(--nudge-y));
+    left: calc(var(--col-desc-left) + var(--nudge-x));
+    width: calc(var(--col-total-left) + var(--col-total-width) - var(--col-desc-left));
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+/* Shipped To */
+#piShippedTo {
+    position: absolute;
+    top: calc(246mm + var(--nudge-y));
+    left: calc(var(--col-desc-left) + var(--nudge-x));
+    width: calc(var(--col-total-left) + var(--col-total-width) - var(--col-desc-left));
+}
+
+/* Receipt */
+#piReceipt {
+    position: absolute;
+    top: calc(251mm + var(--nudge-y));
+    left: calc(var(--col-desc-left) + var(--nudge-x));
+    width: calc(var(--col-total-left) + var(--col-total-width) - var(--col-desc-left));
+}
+
+/* Amount in Words */
+#piAmountWords {
+    position: absolute;
+    top: calc(2mm + var(--nudge-y));
+    left: calc(var(--col-desc-left) + var(--nudge-x));
+    width: 100mm;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    line-height: 1.4;
+}
+
+/* ---- 5. Grand total — the one fixed footer field, inside the
+   pre-printed TOTAL box at the bottom of the Total column
+   (y 255.2mm–264.0mm on the stationery). No caption needed — the
+   stationery already prints "TOTAL" beside it — just a rule line
+   above the number. ---- */
+#piGrandTotal {
+    top: calc(275mm + var(--nudge-y));
+    left: calc(195mm + var(--nudge-x));
+    width: 22mm;
+    text-align: right;
+    font-weight: bold;
+    font-size: 12pt;
+    border-top: 0.3mm solid #000;
+    padding-top: 1mm;
+}
+
+@media print {
+    #screenView {
+        display: none;
+    }
+
+    body {
+        margin: 0;
+        width: 210mm;
+        height: 297mm;
+    }
+
+    .print-only {
+        display: block;
+    }
+}

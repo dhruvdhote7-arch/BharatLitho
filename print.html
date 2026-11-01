@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+        <meta charset="UTF-8">
+
+        <title>Invoice Print</title>
+
+        <link rel="stylesheet" href="print.css">
+
+</head>
+
+<body>
+
+        <!-- ==================================================
+             Your stationery already has the letterhead, box
+             borders, column headers, GSTIN/PAN, and footer text
+             printed on it. This prints ONLY the variable data,
+             positioned to land in the blank spaces on that sheet.
+             Populated by print.js just before printing.
+             (Mirrors the #printInvoice block in index.html.)
+        ================================================== -->
+
+        <div class="print-only" id="printInvoice">
+
+            <div class="pf" id="piConsigneeName"></div>
+            <div class="pf" id="piConsigneeAddress"></div>
+            <!-- City, State - Pincode (pincode prints right after state, same line) -->
+            <div class="pf" id="piConsigneeCityState"></div>
+            <div class="pf" id="piConsigneeGstin"></div>
+
+            <div class="pf" id="piInvoiceNo"></div>
+            <div class="pf" id="piIssueDateTime"></div>
+
+            <div id="piMaterial"></div>
+
+            <div id="piItemsContainer"></div>
+
+            <div id="piSubtotal"></div>
+
+            <div id="piCgstLabel"></div>
+            <div id="piCgstValue"></div>
+
+            <div id="piSgstLabel"></div>
+            <div id="piSgstValue"></div>
+
+            <div id="piIgstLabel"></div>
+            <div id="piIgstValue"></div>
+
+            <div id="piTotalAfterGst"></div>
+
+            <div id="piRoundOffLabel"></div>
+            <div id="piRoundOffValue"></div>
+
+            <div id="piChallan"></div>
+            <div id="piShippedTo"></div>
+            <div id="piReceipt"></div>
+            <div id="piAmountWords"></div>
+
+            <div class="pf" id="piGrandTotal"></div>
+
+        </div><!-- /#printInvoice -->
+
+
+
+
+
+
+        <script src="print.js"></script>
+
+</body>
+
+</html>
